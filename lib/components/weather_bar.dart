@@ -28,6 +28,7 @@ class WeatherBar extends StatelessWidget {
     final placeTextStyle = text.headlineLarge?.copyWith(
       color: color.primary,
       fontWeight: FontWeight.bold,
+      fontSize: 25,
     );
 
     return Column(

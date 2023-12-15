@@ -1,10 +1,7 @@
 import "package:flutter/material.dart";
-import "package:mozc_flutter_bootcamp_23_showcase/components/error_screen.dart";
-import "package:mozc_flutter_bootcamp_23_showcase/components/no_preferred_city_screen.dart";
 import "package:mozc_flutter_bootcamp_23_showcase/components/weather_forecast_card.dart";
 import "package:mozc_flutter_bootcamp_23_showcase/models/city.dart";
 import "package:mozc_flutter_bootcamp_23_showcase/models/weather.dart";
-import "package:mozc_flutter_bootcamp_23_showcase/utils/api.dart";
 import "package:mozc_flutter_bootcamp_23_showcase/utils/hive.dart";
 
 class Forecast extends StatefulWidget {
@@ -16,29 +13,14 @@ class Forecast extends StatefulWidget {
 
 class _ForecastState extends State<Forecast> {
   City? get preferredCity => getPreferredCity();
-  Future<List<ForecastWeatherDaySummary>>? weatherFuture;
 
   @override
   void initState() {
     super.initState();
-    setForecastData();
-  }
-
-  void setForecastData() {
-    final city = preferredCity;
-    if (city == null) return;
-
-    setState(() {
-      weatherFuture = get5DayForecast(city).then((e) => ForecastWeatherDaySummary.fromList(e));
-    });
   }
 
   @override
   Widget build(BuildContext context) {
-    if (preferredCity == null) {
-      return NoPreferredCityScreen(onCityAdded: setForecastData);
-    }
-
     final mediaPadding = MediaQuery.paddingOf(context);
     var padding = EdgeInsets.only(
       left: 8,
@@ -47,32 +29,28 @@ class _ForecastState extends State<Forecast> {
       bottom: mediaPadding.bottom + 8,
     );
 
-    return FutureBuilder(
-      future: weatherFuture,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting ||
-            snapshot.connectionState == ConnectionState.none) {
-          return const Center(child: CircularProgressIndicator());
-        }
-
-        if (snapshot.hasError) {
-          return Center(child: ErrorScreen(error: snapshot.error!));
-        }
-
-        final data = snapshot.requireData;
-
-        return MediaQuery.removePadding(
-          context: context,
-          removeTop: true,
-          removeBottom: true,
-          child: ListView.separated(
-            itemCount: data.length,
-            padding: padding,
-            separatorBuilder: (context, index) => const SizedBox(height: 4),
-            itemBuilder: (context, i) => WeatherForecastCard(data: data.elementAt(i)),
+    return MediaQuery.removePadding(
+      context: context,
+      removeTop: true,
+      removeBottom: true,
+      child: ListView.separated(
+        itemCount: 5,
+        padding: padding,
+        separatorBuilder: (context, index) => const SizedBox(height: 4),
+        itemBuilder: (context, i) => WeatherForecastCard(
+            data: ForecastWeatherDaySummary(
+          timeRange: (DateTime.now(), DateTime.now()),
+          chanceOfRainRange: (0.0, 0.0),
+          humidityRange: (0, 0),
+          windSpeedRange: (0.0, 0.0),
+          temperatureRange: (300, 350),
+          weather: const WeatherConditionData(
+            id: 1,
+            status: WeatherStatus.rain,
+            iconId: "01d",
           ),
-        );
-      },
+        )),
+      ),
     );
   }
 }
