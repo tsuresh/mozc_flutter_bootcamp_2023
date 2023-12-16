@@ -1,11 +1,12 @@
 import "dart:convert";
 
+import "package:flutter_dotenv/flutter_dotenv.dart";
 import "package:http/http.dart" as http;
 import "package:mozc_flutter_bootcamp_23_showcase/models/city.dart";
 import "package:mozc_flutter_bootcamp_23_showcase/models/weather.dart";
 
 const apiUrl = "api.openweathermap.org";
-const apiKey = String.fromEnvironment("MOZC_OPEN_WEATHER_API_KEY");
+var apiKey = dotenv.env["MOZC_OPEN_WEATHER_API_KEY"] ?? "";
 
 T handleDecode<T>(int statusCode, String body) {
   final data = json.decode(body);
