@@ -8,13 +8,16 @@ class WeatherBar extends StatelessWidget {
   final double temperature;
   final String location;
   final DateTime date;
-
+  final String image;
+  final double height;
   const WeatherBar({
     super.key,
     required this.temperature,
     required this.status,
     required this.location,
     required this.date,
+    required this.image,
+    required this.height,
   });
 
   @override
@@ -36,9 +39,22 @@ class WeatherBar extends StatelessWidget {
       children: [
         Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
           Text(location, style: placeTextStyle),
-          _TempStatus(temperature: temperature, status: status),
+          Row(
+            children: <Widget>[
+              Image(
+                height: height,
+                width: height,
+                fit: BoxFit.fitWidth,
+                filterQuality: FilterQuality.high,
+                image: AssetImage("assets/icons/$image.png"),
+              ),
+              _TempStatus(temperature: temperature, status: status),
+            ],
+          ),
         ]),
-        Text(dateString, style: text.labelLarge?.copyWith(color: color.primary.withOpacity(0.5))),
+        Text(dateString,
+            style: text.labelLarge
+                ?.copyWith(color: color.primary.withOpacity(0.5))),
       ],
     );
   }
@@ -69,7 +85,8 @@ class _TempStatus extends StatelessWidget {
       children: [
         Column(mainAxisSize: MainAxisSize.min, children: [
           Text(temperature.toStringAsFixed(1), style: tempTextStyle),
-          Text(status.asHumanReadable(), style: text.titleMedium?.copyWith(color: colors.primary)),
+          Text(status.asHumanReadable(),
+              style: text.titleMedium?.copyWith(color: colors.primary)),
         ]),
         Text("°C", style: text.labelLarge?.copyWith(color: colors.primary)),
       ],
