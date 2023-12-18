@@ -51,11 +51,10 @@ class _HomeState extends State<Home> {
           child: Padding(
             padding: const EdgeInsets.fromLTRB(32, 32, 32, 32),
             child: OrientationBuilder(
+              // screen will be in the landscape mode the picture will hide
               builder: (context, orientation) {
                 double imageHeight =
                     orientation == Orientation.portrait ? 256.0 : 0.0;
-                double imageHeight2 =
-                    orientation == Orientation.portrait ? 0.0 : 100.0;
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
